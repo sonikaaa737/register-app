@@ -7,7 +7,7 @@ pipeline {
     environment {
 	    APP_NAME = "register-app-pipeline"
             RELEASE = "1.0.0"
-            DOCKER_USER = "niroshaum"
+            DOCKER_USER = "sonika168"
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
@@ -22,7 +22,7 @@ pipeline {
 
         stage("Checkout from SCM"){
                 steps {
-                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/niroshaum/register-app'
+                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/sonikaaa737/register-app'
                 }
         }
 
@@ -77,7 +77,7 @@ pipeline {
        stage("Trivy Scan") {
            steps {
                script {
-	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ashfaque9x/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image sonika168/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
                }
            }
        }
@@ -94,7 +94,7 @@ pipeline {
        stage("Trigger CD Pipeline") {
             steps {
                 script {
-                    sh "curl -v -k --user niroshaum:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-232-128-192.ap-south-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
+                    sh "curl -v -k --user sonika:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-233-168-54.ap-south-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
                 }
             }
        }
@@ -104,12 +104,12 @@ pipeline {
        failure {
              emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
                       subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
-                      mimeType: 'text/html',to: "niroshaum@gmail.com
+                      mimeType: 'text/html',to: "sonikasonuu2005@gmail.com"
       }
       success {
             emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
-                     mimeType: 'text/html',to: "niroshaum@gmail.com"
+                     mimeType: 'text/html',to: "sonikasonuu2005@gmail.com"
       }      
    }
 }
